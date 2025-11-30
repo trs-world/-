@@ -21,6 +21,10 @@ const demonImages: Record<string, any> = {
   'orc-tank': require('../../assets/Gate-Orc.png'),
   'witch-support': require('../../assets/Void-Witch.png'),
   'goblin-farmer': require('../../assets/Greedy-Goblin.png'),
+  'hell-hound-attacker': require('../../assets/Hell-Hound.png'),
+  'void-eye-support': require('../../assets/Void-Eye.png'),
+  'stone-golem-tank': require('../../assets/Stone-Golem.png'),
+  'litch-support': require('../../assets/Litch.png'),
 };
 
 export default function DemonsScreen() {

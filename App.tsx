@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar } from 'expo-status-bar';
@@ -8,11 +8,30 @@ import DemonsScreen from '@/screens/DemonsScreen';
 import UpgradesScreen from '@/screens/UpgradesScreen';
 import SettingsScreen from '@/screens/SettingsScreen';
 import { useGameLoop } from '@/hooks/useGameLoop';
+import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
+
 export default function App() {
   useGameLoop();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        await Notifications.requestPermissionsAsync();
+      } catch {
+        // ignore permission errors
+      }
+    })();
+  }, []);
 
   return (
     <NavigationContainer>

@@ -1,11 +1,13 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from 'expo-notifications';
 import {
   BASE_FLOOR_CLEAR_TIME_MS,
   GameState,
   Resources,
   createInitialGameState,
+  createDefaultDemons,
   getFloorInfo,
   getFloorRewards,
   getPartyPower,
@@ -69,12 +71,25 @@ export const useGameStore = create<GameStore>()(
       },
 
       togglePartyStatus: (id: string) => {
-        set((state) => ({
-          ...state,
-          demons: state.demons.map((d) =>
-            d.id === id ? { ...d, isInParty: !d.isInParty } : d,
-          ),
-        }));
+        set((state) => {
+          const target = state.demons.find((d) => d.id === id);
+          if (!target) return state;
+
+          // Enforce maximum party size of 4 when trying to add a demon
+          if (!target.isInParty) {
+            const partyCount = state.demons.filter((d) => d.isInParty).length;
+            if (partyCount >= 4) {
+              return state;
+            }
+          }
+
+          return {
+            ...state,
+            demons: state.demons.map((d) =>
+              d.id === id ? { ...d, isInParty: !d.isInParty } : d,
+            ),
+          };
+        });
       },
 
       buyUpgrade: (type) => {
@@ -101,39 +116,36 @@ export const useGameStore = create<GameStore>()(
         if (elapsedMs <= 0) return;
 
         set((state) => {
-          let { currentFloor, maxReachedFloor, resources } = state;
+          let { currentFloor, maxReachedFloor, resources, pendingBattleMs } = state;
           const startFloor = currentFloor;
           const partyPower = getPartyPower(state.demons, state.demonLordUpgrades);
 
-          if (partyPower <= 0) {
-            return {
-              ...state,
-              lastActiveAt: Date.now(),
-            };
-          }
-
-          let remainingMs = elapsedMs;
+          let remainingMs = pendingBattleMs + elapsedMs;
           let safety = 0;
 
           while (remainingMs >= BASE_FLOOR_CLEAR_TIME_MS && safety < 1000) {
             const floorInfo = getFloorInfo(currentFloor);
-            if (partyPower < floorInfo.difficulty) break;
+            const baseRewards = getFloorRewards(floorInfo, state.demonLordUpgrades);
 
             remainingMs -= BASE_FLOOR_CLEAR_TIME_MS;
-            const rewards = getFloorRewards(floorInfo, state.demonLordUpgrades);
-            resources = applyRewards(resources, rewards);
-            currentFloor += 1;
-            if (currentFloor > maxReachedFloor) {
-              maxReachedFloor = currentFloor;
-            }
-            safety += 1;
-          }
 
-          if (currentFloor === startFloor && remainingMs === elapsedMs) {
-            return {
-              ...state,
-              lastActiveAt: Date.now(),
-            };
+            if (partyPower >= floorInfo.difficulty) {
+              // 勝てる場合: フロアを進めてフル報酬
+              resources = applyRewards(resources, baseRewards);
+              currentFloor += 1;
+              if (currentFloor > maxReachedFloor) {
+                maxReachedFloor = currentFloor;
+              }
+            } else if (partyPower > 0) {
+              // 勝てない場合: 30%効率で報酬のみ獲得（フロアは進まない）
+              const scaledRewards: Resources = {
+                souls: Math.floor(baseRewards.souls * 0.3),
+                gems: Math.floor(baseRewards.gems * 0.3),
+              };
+              resources = applyRewards(resources, scaledRewards);
+            }
+
+            safety += 1;
           }
 
           return {
@@ -141,6 +153,7 @@ export const useGameStore = create<GameStore>()(
             currentFloor,
             maxReachedFloor,
             resources,
+            pendingBattleMs: remainingMs,
             lastActiveAt: Date.now(),
           };
         });
@@ -172,16 +185,47 @@ export const useGameStore = create<GameStore>()(
         maxReachedFloor: state.maxReachedFloor,
         resources: state.resources,
         demonLordUpgrades: state.demonLordUpgrades,
+        pendingBattleMs: state.pendingBattleMs,
         lastActiveAt: state.lastActiveAt,
       }),
       onRehydrateStorage: () => (state) => {
         if (!state) return;
+        // Merge newly added demons into existing saves based on id
+        const defaultDemons = createDefaultDemons();
+        const existingIds = new Set(state.demons.map((d) => d.id));
+        const missingDemons = defaultDemons.filter((d) => !existingIds.has(d.id));
+        if (missingDemons.length > 0) {
+          useGameStore.setState((prev) => ({
+            ...prev,
+            demons: [...prev.demons, ...missingDemons],
+          }));
+        }
         const now = Date.now();
         if (state.lastActiveAt != null) {
           const elapsed = now - state.lastActiveAt;
           if (elapsed > 0) {
             // After rehydrate, run offline progress once
+            const beforeResources = state.resources;
             useGameStore.getState().processTime(elapsed);
+
+            // Only notify if the player was away for at least 1 minute
+            if (elapsed >= 300000) {
+              const afterResources = useGameStore.getState().resources;
+              const gainedSouls = Math.max(0, afterResources.souls - beforeResources.souls);
+              const gainedGems = Math.max(0, afterResources.gems - beforeResources.gems);
+
+              if (gainedSouls > 0 || gainedGems > 0) {
+                Notifications.scheduleNotificationAsync({
+                  content: {
+                    title: 'Your demons brought you rewards.',
+                    body: `While you were away, your demons have been working for you.\nSouls: ${gainedSouls}\nGems: ${gainedGems}`,
+                  },
+                  trigger: null,
+                }).catch(() => {
+                  // ignore notification errors
+                });
+              }
+            }
           }
         }
         useGameStore.setState({ lastActiveAt: now });

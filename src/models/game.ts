@@ -37,10 +37,11 @@ export interface GameState {
   maxReachedFloor: number;
   resources: Resources;
   demonLordUpgrades: DemonLordUpgrades;
+  pendingBattleMs: number;
   lastActiveAt: number | null; // timestamp for idle progress
 }
 
-export const BASE_FLOOR_CLEAR_TIME_MS = 10000; // 10s per floor when strong enough
+export const BASE_FLOOR_CLEAR_TIME_MS = 20000; // 20s per floor when strong enough
 
 export function getDemonPower(demon: Demon, upgrades: DemonLordUpgrades): number {
   const attack = demon.baseAttack * (1 + demon.level * 0.12) * upgrades.attackMultiplier;
@@ -144,6 +145,50 @@ export function createDefaultDemons(): Demon[] {
       rarity: 'common',
       isInParty: false,
     },
+    {
+      id: 'hell-hound-attacker',
+      name: 'Hell-Hound',
+      level: 1,
+      baseAttack: 16,
+      baseDefense: 6,
+      baseSpeed: 11,
+      role: 'attacker',
+      rarity: 'rare',
+      isInParty: false,
+    },
+    {
+      id: 'void-eye-support',
+      name: 'Void-Eye',
+      level: 1,
+      baseAttack: 11,
+      baseDefense: 7,
+      baseSpeed: 13,
+      role: 'support',
+      rarity: 'epic',
+      isInParty: false,
+    },
+    {
+      id: 'stone-golem-tank',
+      name: 'Stone-Golem',
+      level: 1,
+      baseAttack: 9,
+      baseDefense: 18,
+      baseSpeed: 4,
+      role: 'tank',
+      rarity: 'epic',
+      isInParty: false,
+    },
+    {
+      id: 'litch-support',
+      name: 'Litch',
+      level: 1,
+      baseAttack: 14,
+      baseDefense: 8,
+      baseSpeed: 10,
+      role: 'support',
+      rarity: 'legendary',
+      isInParty: false,
+    },
   ];
 }
 
@@ -162,6 +207,7 @@ export function createInitialGameState(): GameState {
       soulGainMultiplier: 1,
       gemGainMultiplier: 1,
     },
+    pendingBattleMs: 0,
     lastActiveAt: Date.now(),
   };
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ImageBackground } from 'react-native';
 import { Video } from 'expo-av';
 import { useGameStore } from '@/store/gameStore';
-import { getFloorInfo, getPartyPower } from '@/models/game';
+import { BASE_FLOOR_CLEAR_TIME_MS, getFloorInfo, getPartyPower } from '@/models/game';
 
 const RunnerVideo: React.FC<{ source: any }> = ({ source }) => {
   const videoRef = React.useRef<Video | null>(null);
@@ -67,12 +67,15 @@ const RunnerSprite: React.FC<{ frames: any[]; fps?: number }> = ({ frames, fps =
 };
 
 export default function TowerScreen() {
-  const { currentFloor, maxReachedFloor, demons, demonLordUpgrades, resources, touch } =
+  const { currentFloor, maxReachedFloor, demons, demonLordUpgrades, resources, pendingBattleMs, touch } =
     useGameStore();
 
   const floorInfo = getFloorInfo(currentFloor);
   const partyPower = getPartyPower(demons, demonLordUpgrades);
-  const progress = Math.max(0, Math.min(1, partyPower / floorInfo.difficulty || 0));
+  // Show real-time progress towards the next battle tick (time-based),
+  // rather than a static power/difficulty ratio that never moves.
+  const timeProgress = Math.max(0, Math.min(1, pendingBattleMs / BASE_FLOOR_CLEAR_TIME_MS));
+  const progress = timeProgress;
 
   const movingVideoById: Record<string, any> = React.useMemo(
     () => ({
@@ -92,11 +95,23 @@ export default function TowerScreen() {
         require('../../assets/moving/Crimson-imp-3.png'),
         require('../../assets/moving/Crimson-imp-4.png'),
       ],
+      'hell-hound-attacker': [
+        require('../../assets/moving/Hell-Hound-1.png'),
+        require('../../assets/moving/Hell-Hound-2.png'),
+        require('../../assets/moving/Hell-Hound-3.png'),
+        require('../../assets/moving/Hell-Hound-4.png'),
+      ],
       'orc-tank': [
         require('../../assets/moving/Gate-Orc-1.png'),
         require('../../assets/moving/Gate-Orc-2.png'),
         require('../../assets/moving/Gate-Orc-3.png'),
         require('../../assets/moving/Gate-Orc-4.png'),
+      ],
+      'stone-golem-tank': [
+        require('../../assets/moving/Stone-Golem-1.png'),
+        require('../../assets/moving/Stone-Golem-2.png'),
+        require('../../assets/moving/Stone-Golem-3.png'),
+        require('../../assets/moving/Stone-Golem-4.png'),
       ],
       'witch-support': [
         require('../../assets/moving/Void-Witch-1.png'),
@@ -104,11 +119,23 @@ export default function TowerScreen() {
         require('../../assets/moving/Void-Witch-3.png'),
         require('../../assets/moving/Void-Witch-4.png'),
       ],
+      'void-eye-support': [
+        require('../../assets/moving/Void-Eye-1.png'),
+        require('../../assets/moving/Void-Eye-2.png'),
+        require('../../assets/moving/Void-Eye-3.png'),
+        require('../../assets/moving/Void-Eye-4.png'),
+      ],
       'goblin-farmer': [
         require('../../assets/moving/Greedy-Goblin-1.png'),
         require('../../assets/moving/Greedy-Goblin-2.png'),
         require('../../assets/moving/Greedy-Goblin-3.png'),
         require('../../assets/moving/Greedy-Goblin-4.png'),
+      ],
+      'litch-support': [
+        require('../../assets/moving/Litch-1.png'),
+        require('../../assets/moving/Litch-2.png'),
+        require('../../assets/moving/Litch-3.png'),
+        require('../../assets/moving/Litch-4.png'),
       ],
     }),
     [],

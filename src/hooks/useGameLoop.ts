@@ -5,28 +5,22 @@ import { useGameStore } from '@/store/gameStore';
 export function useGameLoop() {
   const processTime = useGameStore((s) => s.processTime);
   const touch = useGameStore((s) => s.touch);
-  const lastActiveAt = useGameStore((s) => s.lastActiveAt);
 
+  // On mount, run offline catchup once
   useEffect(() => {
     touch();
   }, [touch]);
 
+  // In-app loop: advance time at a steady rate (1s per tick)
   useEffect(() => {
     const interval = setInterval(() => {
-      if (lastActiveAt == null) {
-        touch();
-        return;
-      }
-      const now = Date.now();
-      const elapsed = now - lastActiveAt;
-      if (elapsed > 0) {
-        processTime(elapsed);
-      }
+      processTime(1000);
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [processTime, touch, lastActiveAt]);
+  }, [processTime]);
 
+  // When app returns to foreground, run offline catchup once
   useEffect(() => {
     const sub = AppState.addEventListener('change', (state) => {
       if (state === 'active') {
