@@ -1,4 +1,4 @@
-# Tower of Demonlord
+# ブレインロットの塔
 
 シンプルで拡張しやすい放置系 RPG (Expo + TypeScript + Zustand) プロジェクト。
 

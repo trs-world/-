@@ -55,10 +55,26 @@ export default function App() {
           },
         })}
       >
-        <Tab.Screen name="Tower" component={TowerScreen} />
-        <Tab.Screen name="Demons" component={DemonsScreen} />
-        <Tab.Screen name="Upgrades" component={UpgradesScreen} />
-        <Tab.Screen name="Zukan" component={SettingsScreen} />
+        <Tab.Screen
+          name="Tower"
+          component={TowerScreen}
+          options={{ tabBarLabel: '塔' }}
+        />
+        <Tab.Screen
+          name="Demons"
+          component={DemonsScreen}
+          options={{ tabBarLabel: 'ブレインロット' }}
+        />
+        <Tab.Screen
+          name="Upgrades"
+          component={UpgradesScreen}
+          options={{ tabBarLabel: '強化' }}
+        />
+        <Tab.Screen
+          name="Zukan"
+          component={SettingsScreen}
+          options={{ tabBarLabel: '図鑑' }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

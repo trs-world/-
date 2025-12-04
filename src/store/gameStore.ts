@@ -195,14 +195,20 @@ export const useGameStore = create<GameStore>()(
         if (!state) return;
         // Merge newly added demons into existing saves based on id
         const defaultDemons = createDefaultDemons();
+        const defaultIds = new Set(defaultDemons.map((d) => d.id));
         const existingIds = new Set(state.demons.map((d) => d.id));
         const missingDemons = defaultDemons.filter((d) => !existingIds.has(d.id));
-        if (missingDemons.length > 0) {
-          useGameStore.setState((prev) => ({
-            ...prev,
-            demons: [...prev.demons, ...missingDemons],
-          }));
-        }
+
+        // 既存セーブから「もはや定義されていないデーモン」（英語名など）を削除
+        useGameStore.setState((prev) => ({
+          ...prev,
+          demons: [
+            // 有効なIDのみ保持
+            ...prev.demons.filter((d) => defaultIds.has(d.id)),
+            // 足りないデーモンを追加
+            ...missingDemons,
+          ],
+        }));
         const now = Date.now();
         if (state.lastActiveAt != null) {
           const elapsed = now - state.lastActiveAt;

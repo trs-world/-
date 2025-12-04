@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, ImageBackground } from 'react-native';
-import { Video } from 'expo-av';
+import { Video, ResizeMode } from 'expo-av';
 import { useGameStore } from '@/store/gameStore';
 import { BASE_FLOOR_CLEAR_TIME_MS, getFloorInfo, getPartyPower } from '@/models/game';
 
@@ -31,7 +31,7 @@ const RunnerVideo: React.FC<{ source: any }> = ({ source }) => {
       ref={videoRef}
       source={source}
       style={styles.runnerVideo}
-      resizeMode="contain"
+      resizeMode={ResizeMode.CONTAIN}
       isLooping
       shouldPlay
       isMuted
@@ -39,15 +39,20 @@ const RunnerVideo: React.FC<{ source: any }> = ({ source }) => {
   );
 };
 
-const RunnerSprite: React.FC<{ frames: any[]; fps?: number }> = ({ frames, fps = 6 }) => {
+const SpriteSheetRunner: React.FC<{
+  source: any;
+  frames?: number;
+  fps?: number;
+  frameWidth?: number;
+}> = ({ source, frames = 4, fps = 6, frameWidth }) => {
   const [frameIndex, setFrameIndex] = React.useState(0);
+  const [containerWidth, setContainerWidth] = React.useState(0);
 
   React.useEffect(() => {
-    if (!frames || frames.length === 0) return;
-
+    if (frames <= 1) return;
     const intervalMs = 1000 / fps;
     const id = setInterval(() => {
-      setFrameIndex((prev) => (prev + 1) % frames.length);
+      setFrameIndex((prev) => (prev + 1) % frames);
     }, intervalMs);
 
     return () => {
@@ -55,16 +60,59 @@ const RunnerSprite: React.FC<{ frames: any[]; fps?: number }> = ({ frames, fps =
     };
   }, [frames, fps]);
 
-  if (!frames || frames.length === 0) return null;
-
   return (
-    <Image
-      source={frames[frameIndex]}
-      style={styles.runnerVideo}
-      resizeMode="contain"
-    />
+    <View
+      style={[styles.runnerVideo, { overflow: 'hidden' }]}
+      onLayout={(e) => {
+        if (!frameWidth) {
+          setContainerWidth(e.nativeEvent.layout.width);
+        }
+      }}
+    >
+      {(frameWidth || containerWidth) > 0 && (
+        <Image
+          source={source}
+          style={[
+            styles.runnerVideo,
+            {
+              width: (frameWidth || containerWidth) * frames,
+              transform: [{ translateX: -frameIndex * (frameWidth || containerWidth) }],
+            },
+          ]}
+          resizeMode="contain"
+        />
+      )}
+    </View>
   );
 };
+
+// 既存の4枚スプライト方式（RunnerSprite）は一旦停止
+// const RunnerSprite: React.FC<{ frames: any[]; fps?: number }> = ({ frames, fps = 6 }) => {
+//   const [frameIndex, setFrameIndex] = React.useState(0);
+//
+//   React.useEffect(() => {
+//     if (!frames || frames.length === 0) return;
+//
+//     const intervalMs = 1000 / fps;
+//     const id = setInterval(() => {
+//       setFrameIndex((prev) => (prev + 1) % frames.length);
+//     }, intervalMs);
+//
+//     return () => {
+//       clearInterval(id);
+//     };
+//   }, [frames, fps]);
+//
+//   if (!frames || frames.length === 0) return null;
+//
+//   return (
+//     <Image
+//       source={frames[frameIndex]}
+//       style={styles.runnerVideo}
+//       resizeMode="contain"
+//     />
+//   );
+// };
 
 export default function TowerScreen() {
   const { currentFloor, maxReachedFloor, demons, demonLordUpgrades, resources, pendingBattleMs } =
@@ -78,77 +126,88 @@ export default function TowerScreen() {
   const progress = timeProgress;
 
   const movingVideoById: Record<string, any> = React.useMemo(
+    () => ({}),
+    [],
+  );
+
+  const spriteSheetsById: Record<string, any> = React.useMemo(
     () => ({
-      // Crimson-imp はスプライトで表現するため、動画は他キャラのみで使用
-      'orc-tank': require('../../assets/moving/Gate-Orc.mp4'),
-      'witch-support': require('../../assets/moving/Void-Witch.mp4'),
-      'goblin-farmer': require('../../assets/moving/Greedy-Goblin.mp4'),
+      'tuntuntun-sahool-farmer': require('../../assets/moving/トゥントゥントゥン・サフール-sheet.png'),
+      'tatatata-sahool-farmer': require('../../assets/moving/タタタタ・サフール-sheet.png'),
+      'tetetete-sahool-farmer': require('../../assets/moving/テテテテ・サフール-sheet.png'),
+      'karkelkar-kurukuru-support': require('../../assets/moving/カーケルカール・クルクル-sheet.png'),
+      'bulbaroni-rurirori-support': require('../../assets/moving/ブルバロ二・ルリロリ-sheet.png'),
+      'bulbul-patapim-attacker': require('../../assets/moving/ブルブル・パタピム-sheet.png'),
+      'ririri-rarira-support': require('../../assets/moving/リリリ・ラリラ-sheet.png'),
+      'cappucina-ballerina-attacker': require('../../assets/moving/カプチーナ・バレリーナ-sheet.png'),
+      'cappucino-assassino-attacker': require('../../assets/moving/カプチーノ・アサシーノ-sheet.png'),
+      'strawberry-elephant-tank': require('../../assets/moving/ストロベリーエレファント-sheet.png'),
+      'bott-hotspot-support': require('../../assets/moving/ボット・ホットスポット-sheet.png'),
     }),
     [],
   );
 
-  const movingSpritesById: Record<string, any[]> = React.useMemo(
-    () => ({
-      'imp-attacker': [
-        require('../../assets/moving/Crimson-imp-1.png'),
-        require('../../assets/moving/Crimson-imp-2.png'),
-        require('../../assets/moving/Crimson-imp-3.png'),
-        require('../../assets/moving/Crimson-imp-4.png'),
-      ],
-      'hell-hound-attacker': [
-        require('../../assets/moving/Hell-Hound-1.png'),
-        require('../../assets/moving/Hell-Hound-2.png'),
-        require('../../assets/moving/Hell-Hound-3.png'),
-        require('../../assets/moving/Hell-Hound-4.png'),
-      ],
-      'orc-tank': [
-        require('../../assets/moving/Gate-Orc-1.png'),
-        require('../../assets/moving/Gate-Orc-2.png'),
-        require('../../assets/moving/Gate-Orc-3.png'),
-        require('../../assets/moving/Gate-Orc-4.png'),
-      ],
-      'stone-golem-tank': [
-        require('../../assets/moving/Stone-Golem-1.png'),
-        require('../../assets/moving/Stone-Golem-2.png'),
-        require('../../assets/moving/Stone-Golem-3.png'),
-        require('../../assets/moving/Stone-Golem-4.png'),
-      ],
-      'witch-support': [
-        require('../../assets/moving/Void-Witch-1.png'),
-        require('../../assets/moving/Void-Witch-2.png'),
-        require('../../assets/moving/Void-Witch-3.png'),
-        require('../../assets/moving/Void-Witch-4.png'),
-      ],
-      'void-eye-support': [
-        require('../../assets/moving/Void-Eye-1.png'),
-        require('../../assets/moving/Void-Eye-2.png'),
-        require('../../assets/moving/Void-Eye-3.png'),
-        require('../../assets/moving/Void-Eye-4.png'),
-      ],
-      'goblin-farmer': [
-        require('../../assets/moving/Greedy-Goblin-1.png'),
-        require('../../assets/moving/Greedy-Goblin-2.png'),
-        require('../../assets/moving/Greedy-Goblin-3.png'),
-        require('../../assets/moving/Greedy-Goblin-4.png'),
-      ],
-      'litch-support': [
-        require('../../assets/moving/Litch-1.png'),
-        require('../../assets/moving/Litch-2.png'),
-        require('../../assets/moving/Litch-3.png'),
-        require('../../assets/moving/Litch-4.png'),
-      ],
-    }),
-    [],
-  );
+  // 4枚スプライトのマッピングも一旦停止
+  // const movingSpritesById: Record<string, any[]> = React.useMemo(
+  //   () => ({
+  //     'imp-attacker': [
+  //       require('../../assets/moving/Crimson-imp-1.png'),
+  //       require('../../assets/moving/Crimson-imp-2.png'),
+  //       require('../../assets/moving/Crimson-imp-3.png'),
+  //       require('../../assets/moving/Crimson-imp-4.png'),
+  //     ],
+  //     'hell-hound-attacker': [
+  //       require('../../assets/moving/Hell-Hound-1.png'),
+  //       require('../../assets/moving/Hell-Hound-2.png'),
+  //       require('../../assets/moving/Hell-Hound-3.png'),
+  //       require('../../assets/moving/Hell-Hound-4.png'),
+  //     ],
+  //     'orc-tank': [
+  //       require('../../assets/moving/Gate-Orc-1.png'),
+  //       require('../../assets/moving/Gate-Orc-2.png'),
+  //       require('../../assets/moving/Gate-Orc-3.png'),
+  //       require('../../assets/moving/Gate-Orc-4.png'),
+  //     ],
+  //     'stone-golem-tank': [
+  //       require('../../assets/moving/Stone-Golem-1.png'),
+  //       require('../../assets/moving/Stone-Golem-2.png'),
+  //       require('../../assets/moving/Stone-Golem-3.png'),
+  //       require('../../assets/moving/Stone-Golem-4.png'),
+  //     ],
+  //     'witch-support': [
+  //       require('../../assets/moving/Void-Witch-1.png'),
+  //       require('../../assets/moving/Void-Witch-2.png'),
+  //       require('../../assets/moving/Void-Witch-3.png'),
+  //       require('../../assets/moving/Void-Witch-4.png'),
+  //     ],
+  //     'void-eye-support': [
+  //       require('../../assets/moving/Void-Eye-1.png'),
+  //       require('../../assets/moving/Void-Eye-2.png'),
+  //       require('../../assets/moving/Void-Eye-3.png'),
+  //       require('../../assets/moving/Void-Eye-4.png'),
+  //     ],
+  //     'goblin-farmer': [
+  //       require('../../assets/moving/Greedy-Goblin-1.png'),
+  //       require('../../assets/moving/Greedy-Goblin-2.png'),
+  //       require('../../assets/moving/Greedy-Goblin-3.png'),
+  //       require('../../assets/moving/Greedy-Goblin-4.png'),
+  //     ],
+  //     'litch-support': [
+  //       require('../../assets/moving/Litch-1.png'),
+  //       require('../../assets/moving/Litch-2.png'),
+  //       require('../../assets/moving/Litch-3.png'),
+  //       require('../../assets/moving/Litch-4.png'),
+  //     ],
+  //   }),
+  //   [],
+  // );
 
   const partyMovingDemons = React.useMemo(
     () =>
       demons
-        .filter((d) =>
-          d.isInParty && (movingVideoById[d.id] || movingSpritesById[d.id]),
-        )
+        .filter((d) => d.isInParty && (spriteSheetsById[d.id] || movingVideoById[d.id]))
         .slice(0, 4),
-    [demons, movingVideoById, movingSpritesById],
+    [demons, spriteSheetsById, movingVideoById],
   );
 
   return (
@@ -156,18 +215,18 @@ export default function TowerScreen() {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
-      <Text style={styles.title}>Tower of Demonlord</Text>
-      <Text style={styles.subtitle}>The Demon Lord slumbers on the throne...</Text>
+      <Text style={styles.title}>ブレインロットの塔</Text>
+      <Text style={styles.subtitle}>魔王は玉座で眠り続けている……。</Text>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Current Floor</Text>
+        <Text style={styles.label}>現在の階層</Text>
         <Text style={styles.value}>{currentFloor}</Text>
-        <Text style={styles.label}>Max Reached</Text>
+        <Text style={styles.label}>到達最高階</Text>
         <Text style={styles.value}>{maxReachedFloor}</Text>
       </View>
 
       <View style={styles.battleCard}>
-        <Text style={styles.label}>Expedition</Text>
+        <Text style={styles.label}>遠征状況</Text>
         <View style={styles.battleRow}>
           <View style={styles.partyIcon}>
             <Image
@@ -193,7 +252,7 @@ export default function TowerScreen() {
           />
         </View>
         <Text style={styles.small}>
-          {Math.floor(progress * 100)}% ready to clash with the floor boss.
+          塔の中を進んでいる... {Math.floor(progress * 100)}%
         </Text>
       </View>
 
@@ -207,8 +266,11 @@ export default function TowerScreen() {
             <View style={styles.runnerRow}>
               {partyMovingDemons.map((demon) => (
                 <View key={demon.id} style={styles.runnerVideoContainer}>
-                  {movingSpritesById[demon.id] ? (
-                    <RunnerSprite frames={movingSpritesById[demon.id]} />
+                  {spriteSheetsById[demon.id] ? (
+                    <SpriteSheetRunner
+                      source={spriteSheetsById[demon.id]}
+                      frameWidth={64}
+                    />
                   ) : (
                     <RunnerVideo source={movingVideoById[demon.id]} />
                   )}
@@ -220,23 +282,23 @@ export default function TowerScreen() {
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Floor Difficulty</Text>
+        <Text style={styles.label}>フロア難易度</Text>
         <Text style={styles.value}>{floorInfo.difficulty.toLocaleString()}</Text>
 
-        <Text style={styles.label}>Party Power</Text>
+        <Text style={styles.label}>パーティ戦闘力</Text>
         <Text style={[styles.value, partyPower >= floorInfo.difficulty && styles.valueGood]}>
           {Math.floor(partyPower).toLocaleString()}
         </Text>
 
         <Text style={styles.small}>
-          Rewards: {floorInfo.baseRewardSouls} souls, {floorInfo.baseRewardGems} gems
+          報酬: ソウル {floorInfo.baseRewardSouls} / ジェム {floorInfo.baseRewardGems}
         </Text>
       </View>
 
       <View style={styles.card}>
-        <Text style={styles.label}>Resources</Text>
-        <Text style={styles.value}>Souls: {resources.souls.toLocaleString()}</Text>
-        <Text style={styles.value}>Gems: {resources.gems.toLocaleString()}</Text>
+        <Text style={styles.label}>所持リソース</Text>
+        <Text style={styles.value}>ソウル: {resources.souls.toLocaleString()}</Text>
+        <Text style={styles.value}>ジェム: {resources.gems.toLocaleString()}</Text>
       </View>
     </ScrollView>
   );

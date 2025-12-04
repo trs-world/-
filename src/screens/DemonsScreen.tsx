@@ -17,14 +17,23 @@ function getRarityColor(rarity: Demon['rarity']): string {
 }
 
 const demonImages: Record<string, any> = {
-  'imp-attacker': require('../../assets/Crimson-imp.png'),
-  'orc-tank': require('../../assets/Gate-Orc.png'),
-  'witch-support': require('../../assets/Void-Witch.png'),
-  'goblin-farmer': require('../../assets/Greedy-Goblin.png'),
-  'hell-hound-attacker': require('../../assets/Hell-Hound.png'),
-  'void-eye-support': require('../../assets/Void-Eye.png'),
-  'stone-golem-tank': require('../../assets/Stone-Golem.png'),
-  'litch-support': require('../../assets/Litch.png'),
+  'udindindindun-attacker': require('../../assets/ウディンディンディンドゥン.png'),
+  'espresso-signora-support': require('../../assets/エスプレッソ・シニョーラ.png'),
+  'cappucina-ballerina-attacker': require('../../assets/カプチーナ・バレリーナ.png'),
+  'cappucino-assassino-attacker': require('../../assets/カプチーノ・アサシーノ.png'),
+  'karkelkar-kurukuru-support': require('../../assets/カーケルカール・クルクル.png'),
+  'strawberry-elephant-tank': require('../../assets/ストロベリーエレファント.png'),
+  'tatatata-sahool-farmer': require('../../assets/タタタタ・サフール.png'),
+  'tetetete-sahool-farmer': require('../../assets/テテテテ・サフール.png'),
+  'tuntuntun-sahool-farmer': require('../../assets/トゥントゥントゥンサフール_.png'),
+  'trarara-tralalero-attacker': require('../../assets/トラララ・トララレロ.png'),
+  'bulbaroni-rurirori-support': require('../../assets/ブルバロ二・ルリロリ.png'),
+  'bulbul-patapim-attacker': require('../../assets/ブルブル・パタピム.png'),
+  'bott-hotspot-support': require('../../assets/ボット・ホットスポット.png'),
+  'bombardiro-kurodiro-attacker': require('../../assets/ボンバルディロ・クロディロ.png'),
+  'motor-sahool-tank': require('../../assets/モーター・サフール.png'),
+  'la-vaca-saturno-support': require('../../assets/ラ・ヴァカ・サトゥルノ・サトゥルニータ.png'),
+  'ririri-rarira-support': require('../../assets/リリリ・ラリラ.png'),
 };
 
 export default function DemonsScreen() {
@@ -64,9 +73,9 @@ export default function DemonsScreen() {
         </View>
 
         <Text style={styles.stat}>Lv. {item.level}</Text>
-        <Text style={styles.stat}>Role: {item.role}</Text>
+        <Text style={styles.stat}>ロール: {item.role}</Text>
         <Text style={styles.stat}>
-          ATK {item.baseAttack} | DEF {item.baseDefense} | SPD {item.baseSpeed}
+          攻撃 {item.baseAttack} | 防御 {item.baseDefense} | 速度 {item.baseSpeed}
         </Text>
 
         <View style={styles.actionsRow}>
@@ -78,7 +87,7 @@ export default function DemonsScreen() {
             disabled={resources.souls < soulCost}
             onPress={() => levelUpDemon(item.id)}
           >
-            <Text style={styles.buttonText}>Level Up ({soulCost} Souls)</Text>
+            <Text style={styles.buttonText}>レベルアップ（{soulCost} ソウル）</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -88,7 +97,7 @@ export default function DemonsScreen() {
             ]}
             onPress={() => togglePartyStatus(item.id)}
           >
-            <Text style={styles.buttonText}>{inParty ? 'Remove' : 'Add'} to Party</Text>
+            <Text style={styles.buttonText}>{inParty ? 'パーティから外す' : 'パーティに入れる'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,22 +106,22 @@ export default function DemonsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Demons & Party</Text>
+      <Text style={styles.title}>パーティー</Text>
       <Text style={styles.subtitle}>
-        Spend souls to strengthen your minions and choose who joins the expedition.
+        ソウルを消費してブレインロットを強化し、パーティーメンバーを選びましょう。
       </Text>
 
       <View style={styles.topRow}>
         <View style={styles.resourcesColumn}>
-          <Text style={styles.resource}>Souls: {resources.souls.toLocaleString()}</Text>
-          <Text style={styles.resource}>Gems: {resources.gems.toLocaleString()}</Text>
+          <Text style={styles.resource}>ソウル: {resources.souls.toLocaleString()}</Text>
+          <Text style={styles.resource}>ジェム: {resources.gems.toLocaleString()}</Text>
         </View>
         <TouchableOpacity
           style={styles.filterButton}
           onPress={() => setIsFilterOpen((prev) => !prev)}
         >
           <Text style={styles.filterButtonText}>
-            Filter{rarityFilter !== 'all' ? `: ${rarityFilter.toUpperCase()}` : ''}
+            絞り込み{rarityFilter !== 'all' ? `: ${rarityFilter.toUpperCase()}` : ''}
           </Text>
         </TouchableOpacity>
       </View>
@@ -120,18 +129,18 @@ export default function DemonsScreen() {
       {isFilterOpen && (
         <View style={styles.filterRow}>
           {[
-            { key: 'all', label: 'All' },
-            { key: 'common', label: 'Common' },
-            { key: 'rare', label: 'Rare' },
-            { key: 'epic', label: 'Epic' },
-            { key: 'legendary', label: 'Legendary' },
+            { key: 'all', label: 'すべて' },
+            { key: 'common', label: 'N' },
+            { key: 'rare', label: 'R' },
+            { key: 'epic', label: 'SR' },
+            { key: 'legendary', label: 'SSR' },
           ].map((f) => {
             const isActive = rarityFilter === f.key;
             return (
               <TouchableOpacity
                 key={f.key}
                 style={[styles.filterChip, isActive && styles.filterChipActive]}
-                onPress={() => setRarityFilter(f.key as any)}
+                onPress={() => setRarityFilter(f.key as typeof rarityFilter)}
               >
                 <Text
                   style={[

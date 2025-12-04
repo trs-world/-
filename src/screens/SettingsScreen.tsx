@@ -4,27 +4,34 @@ import { useGameStore } from '@/store/gameStore';
 import { Demon } from '@/models/game';
 
 const zukanImages: Record<string, any> = {
-  'Crimson Imp': require('../../assets/moving/Crimson-imp-1.png'),
-  'Gate Orc': require('../../assets/moving/Gate-Orc-1.png'),
-  'Void Witch': require('../../assets/moving/Void-Witch-1.png'),
-  'Greedy Goblin': require('../../assets/moving/Greedy-Goblin-1.png'),
-  'Hell-Hound': require('../../assets/moving/Hell-Hound-1.png'),
-  'Void-Eye': require('../../assets/moving/Void-Eye-1.png'),
-  'Stone-Golem': require('../../assets/moving/Stone-Golem-1.png'),
-  Litch: require('../../assets/moving/Litch-1.png'),
+  'ウディンディンディンドゥン': require('../../assets/ウディンディンディンドゥン.png'),
+  'エスプレッソ・シニョーラ': require('../../assets/エスプレッソ・シニョーラ.png'),
+  'カプチーナ・バレリーナ': require('../../assets/カプチーナ・バレリーナ.png'),
+  'カプチーノ・アサシーノ': require('../../assets/カプチーノ・アサシーノ.png'),
+  'カーケルカール・クルクル': require('../../assets/カーケルカール・クルクル.png'),
+  'ストロベリーエレファント': require('../../assets/ストロベリーエレファント.png'),
+  'タタタタ・サフール': require('../../assets/タタタタ・サフール.png'),
+  'テテテテ・サフール': require('../../assets/テテテテ・サフール.png'),
+  'トゥントゥントゥンサフール': require('../../assets/トゥントゥントゥンサフール_.png'),
+  'トラララ・トララレロ': require('../../assets/トラララ・トララレロ.png'),
+  'ブルバロ二・ルリロリ': require('../../assets/ブルバロ二・ルリロリ.png'),
+  'ブルブル・パタピム': require('../../assets/ブルブル・パタピム.png'),
+  'ボット・ホットスポット': require('../../assets/ボット・ホットスポット.png'),
+  'ボンバルディロ・クロディロ': require('../../assets/ボンバルディロ・クロディロ.png'),
+  'モーター・サフール': require('../../assets/モーター・サフール.png'),
+  'ラ・ヴァカ・サトゥルノ・サトゥルニータ': require('../../assets/ラ・ヴァカ・サトゥルノ・サトゥルニータ.png'),
+  'リリリ・ラリラ': require('../../assets/リリリ・ラリラ.png'),
 };
 
 export default function SettingsScreen() {
   const demons = useGameStore((s) => s.demons);
 
   const renderItem = ({ item }: { item: Demon }) => {
-    const source = zukanImages[item.name];
+    const source = zukanImages[item.name] ?? require('../../assets/hatena.png');
 
     return (
       <View style={styles.gridItem}>
-        {source && (
-          <Image source={source} style={styles.demonImage} resizeMode="contain" />
-        )}
+        <Image source={source} style={styles.demonImage} resizeMode="contain" />
         <Text style={styles.demonName} numberOfLines={1}>
           {item.name}
         </Text>
@@ -35,7 +42,7 @@ export default function SettingsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>図鑑</Text>
-      <Text style={styles.subtitle}>仲間になった悪魔たちを眺めることができます。</Text>
+      <Text style={styles.subtitle}>集めたブレインロットたち</Text>
 
       <FlatList
         data={demons}

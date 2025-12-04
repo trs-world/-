@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useGameStore } from '@/store/gameStore';
 
 const UPGRADE_LABELS: Record<string, string> = {
-  attackMultiplier: 'Attack Aura',
-  defenseMultiplier: 'Obsidian Shell',
-  soulGainMultiplier: 'Soul Harvest',
-  gemGainMultiplier: 'Greed Crest',
+  attackMultiplier: '攻撃オーラ',
+  defenseMultiplier: '黒曜の守り',
+  soulGainMultiplier: 'ソウル収穫',
+  gemGainMultiplier: '強欲の紋章',
 };
 
 export default function UpgradesScreen() {
@@ -26,14 +26,14 @@ export default function UpgradesScreen() {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
-      <Text style={styles.title}>Demon Lord Upgrades</Text>
+      <Text style={styles.title}>あなたの強化</Text>
       <Text style={styles.subtitle}>
-        Spend gems to empower your eternal slumber. All demons benefit from these auras.
+        ジェムを消費して、あなたの力を高めます。すべてのブレインロットに効果があります。
       </Text>
 
       <View style={styles.resourcesCard}>
-        <Text style={styles.resourcesText}>Souls: {resources.souls.toLocaleString()}</Text>
-        <Text style={styles.resourcesText}>Gems: {resources.gems.toLocaleString()}</Text>
+        <Text style={styles.resourcesText}>ソウル: {resources.souls.toLocaleString()}</Text>
+        <Text style={styles.resourcesText}>ジェム: {resources.gems.toLocaleString()}</Text>
       </View>
 
       {Object.entries(upgrades).map(([key, value]) => {
@@ -48,10 +48,10 @@ export default function UpgradesScreen() {
               <Text style={styles.level}>x{value.toFixed(2)}</Text>
             </View>
             <Text style={styles.description}>
-              {key === 'attackMultiplier' && 'Increase all party attack.'}
-              {key === 'defenseMultiplier' && 'Increase all party defense.'}
-              {key === 'soulGainMultiplier' && 'Gain more souls from each floor.'}
-              {key === 'gemGainMultiplier' && 'Gain more gems from each floor.'}
+              {key === 'attackMultiplier' && 'パーティ全体の攻撃力を上昇させる。'}
+              {key === 'defenseMultiplier' && 'パーティ全体の防御力を上昇させる。'}
+              {key === 'soulGainMultiplier' && '各フロアで獲得できるソウルが増加する。'}
+              {key === 'gemGainMultiplier' && '各フロアで獲得できるジェムが増加する。'}
             </Text>
 
             <TouchableOpacity
@@ -59,7 +59,7 @@ export default function UpgradesScreen() {
               disabled={!canBuy}
               onPress={() => buyUpgrade(typedKey)}
             >
-              <Text style={styles.buttonText}>Upgrade ({cost} Gems)</Text>
+              <Text style={styles.buttonText}>強化（{cost} ジェム）</Text>
             </TouchableOpacity>
           </View>
         );
