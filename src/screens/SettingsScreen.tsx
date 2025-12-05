@@ -12,7 +12,7 @@ const zukanImages: Record<string, any> = {
   'ストロベリーエレファント': require('../../assets/ストロベリーエレファント.png'),
   'タタタタ・サフール': require('../../assets/タタタタ・サフール.png'),
   'テテテテ・サフール': require('../../assets/テテテテ・サフール.png'),
-  'トゥントゥントゥンサフール': require('../../assets/トゥントゥントゥンサフール_.png'),
+  'トゥントゥントゥン・サフール': require('../../assets/トゥントゥントゥンサフール.png'),
   'トラララ・トララレロ': require('../../assets/トラララ・トララレロ.png'),
   'ブルバロ二・ルリロリ': require('../../assets/ブルバロ二・ルリロリ.png'),
   'ブルブル・パタピム': require('../../assets/ブルブル・パタピム.png'),
@@ -49,6 +49,17 @@ const zukanImages: Record<string, any> = {
   'ガンガンツェリ・トルララ': require('../../assets/ガンガンツェリ・トルララ.png'),
   'シュピオニロ・ゴルビロ': require('../../assets/シュピオニロ・ゴルビロ.png'),
   'トルリメロ・トルリチナ': require('../../assets/トルリメロ・トルリチナ.png'),
+  'アンパリ・バッベル': require('../../assets/アンパリ・バッベル.png'),
+  'カネロニ・ドラゴーニ': require('../../assets/カネロニ・ドラゴーニ.png'),
+  'キウィット・バンディット': require('../../assets/キウィット・バンディット.png'),
+  'クダニレ・アストロノート': require('../../assets/クダニレ・アストロノート.png'),
+  'ケトゥパト・ケパト・プレクパト': require('../../assets/ケトゥパト・ケパト・プレクパト.png'),
+  'ブルル・エス・テー・パティプム': require('../../assets/ブルル・エス・テー・パティプム.png'),
+  'マテーオ': require('../../assets/マテーオ.png'),
+  'マンゴリ二・パッロチ二': require('../../assets/マンゴリ二・パッロチ二.png'),
+  'ブッル・ブッル・ガングステル・グシニ': require('../../assets/ブッル・ブッル・ガングステル・グシニ.png'),
+  'ブルエベッリニ・タッティチニ': require('../../assets/ブルエベッリニ・タッティチニ.png'),
+  'レオネッリ・カクタセリ': require('../../assets/レオネッリ・カクタセリ.png'),
 };
 
 export default function SettingsScreen() {

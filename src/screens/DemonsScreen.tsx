@@ -25,7 +25,7 @@ const demonImages: Record<string, any> = {
   'strawberry-elephant-tank': require('../../assets/ストロベリーエレファント.png'),
   'tatatata-sahool-farmer': require('../../assets/タタタタ・サフール.png'),
   'tetetete-sahool-farmer': require('../../assets/テテテテ・サフール.png'),
-  'tuntuntun-sahool-farmer': require('../../assets/トゥントゥントゥンサフール_.png'),
+  'tuntuntun-sahool-farmer': require('../../assets/トゥントゥントゥンサフール.png'),
   'trarara-tralalero-attacker': require('../../assets/トラララ・トララレロ.png'),
   'bulbaroni-rurirori-support': require('../../assets/ブルバロ二・ルリロリ.png'),
   'bulbul-patapim-attacker': require('../../assets/ブルブル・パタピム.png'),
@@ -62,6 +62,17 @@ const demonImages: Record<string, any> = {
   'ganganzeli-torlala-support': require('../../assets/ガンガンツェリ・トルララ.png'),
   'shupionilo-gorvilo-attacker': require('../../assets/シュピオニロ・ゴルビロ.png'),
   'torlimelo-torlicina-support': require('../../assets/トルリメロ・トルリチナ.png'),
+  'ampari-babbel-support': require('../../assets/アンパリ・バッベル.png'),
+  'canneloni-dragoni-attacker': require('../../assets/カネロニ・ドラゴーニ.png'),
+  'kiwitt-bandit-attacker': require('../../assets/キウィット・バンディット.png'),
+  'kudanire-astronaut-support': require('../../assets/クダニレ・アストロノート.png'),
+  'ketupat-kepat-prekpat-tank': require('../../assets/ケトゥパト・ケパト・プレクパト.png'),
+  'bururu-es-te-patipum-attacker': require('../../assets/ブルル・エス・テー・パティプム.png'),
+  'mateo-attacker': require('../../assets/マテーオ.png'),
+  'mangorini-palloccini-support': require('../../assets/マンゴリ二・パッロチ二.png'),
+  'bullu-bullu-gangster-guzzini-attacker': require('../../assets/ブッル・ブッル・ガングステル・グシニ.png'),
+  'bluebellini-tatticini-support': require('../../assets/ブルエベッリニ・タッティチニ.png'),
+  'leonelli-cactaseri-tank': require('../../assets/レオネッリ・カクタセリ.png'),
 };
 
 export default function DemonsScreen() {
