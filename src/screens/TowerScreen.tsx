@@ -132,9 +132,11 @@ export default function TowerScreen() {
 
   const spriteSheetsById: Record<string, any> = React.useMemo(
     () => ({
+      'udindindindun-attacker': require('../../assets/moving/ウディンディンディンドゥン-sheet.png'),
       'tuntuntun-sahool-farmer': require('../../assets/moving/トゥントゥントゥン・サフール-sheet.png'),
       'tatatata-sahool-farmer': require('../../assets/moving/タタタタ・サフール-sheet.png'),
       'tetetete-sahool-farmer': require('../../assets/moving/テテテテ・サフール-sheet.png'),
+      'il-cacto-hipopotamo-tank': require('../../assets/moving/イル・カクト・ヒポポタモ-sheet.png'),
       'karkelkar-kurukuru-support': require('../../assets/moving/カーケルカール・クルクル-sheet.png'),
       'bulbaroni-rurirori-support': require('../../assets/moving/ブルバロ二・ルリロリ-sheet.png'),
       'bulbul-patapim-attacker': require('../../assets/moving/ブルブル・パタピム-sheet.png'),
@@ -142,7 +144,38 @@ export default function TowerScreen() {
       'cappucina-ballerina-attacker': require('../../assets/moving/カプチーナ・バレリーナ-sheet.png'),
       'cappucino-assassino-attacker': require('../../assets/moving/カプチーノ・アサシーノ-sheet.png'),
       'strawberry-elephant-tank': require('../../assets/moving/ストロベリーエレファント-sheet.png'),
+      'bombardiro-kurodiro-attacker': require('../../assets/moving/ボンバルディロ・クロコディロ-sheet.png'),
       'bott-hotspot-support': require('../../assets/moving/ボット・ホットスポット-sheet.png'),
+      'chimpanzini-bananini-attacker': require('../../assets/moving/チンパンジー二・バナニーニ-sheet.png'),
+      'espresso-signora-support': require('../../assets/moving/エスプレッソ・シニョーラ-sheet.png'),
+      'trarara-tralalero-attacker': require('../../assets/moving/トラララ・トララレロ-sheet.png'),
+      'frigo-camelo-attacker': require('../../assets/moving/フリゴ・カメロ-sheet.png'),
+      'la-vaca-saturno-support': require('../../assets/moving/ラ・ヴァカ・サトゥルノ・サトゥルニータ-sheet.png'),
+      'grolbo-fruttodrillo-attacker': require('../../assets/moving/グロルボ・フルットドリッロ-sheet.png'),
+      'jiraffa-celeste-viaggioagreste-support': require('../../assets/moving/ギラファ・チェレストレ-sheet.png'),
+      'trippi-troppi-attacker': require('../../assets/moving/トリッピ・トロッピ-sheet.png'),
+      'bri-bri-bix-dix-bombix-support': require('../../assets/moving/ブリ・ブリ・ビクス・ディクス・ボンビクス-sheet.png'),
+      'bonbonbini-guzzini-attacker': require('../../assets/moving/ボンボンビー二・グジーニ-sheet.png'),
+      'rhino-toasterino-tank': require('../../assets/moving/ライノ・トーステリーノ-sheet.png'),
+      'orangutini-ananassini-attacker': require('../../assets/moving/オランギュティーニ・アナナシーニ-sheet.png'),
+      'cocophant-elephant-tank': require('../../assets/moving/ココファント・エレファント-sheet.png'),
+      'goriro-watermelondrillo-attacker': require('../../assets/moving/ゴリロ・ウォーターメロンドリロ-sheet.png'),
+      'sigma-boy-support': require('../../assets/moving/シグマボーイ-sheet.png'),
+      'teaglorigre-fruttoni-attacker': require('../../assets/moving/ティーグロリーグレ・フルトーニ-sheet.png'),
+      'tracotukutul-delaperadustuz-attacker': require('../../assets/moving/トラコトゥコトゥル・デラペラドゥストゥズ-sheet.png'),
+      'bananita-dolfinita-support': require('../../assets/moving/バナニータ・ドルフィニータ-sheet.png'),
+      'blueberrini-octopussini-attacker': require('../../assets/moving/ブルーベリーニ・オクトプッシーニ-sheet.png'),
+      'pussini-sussini-support': require('../../assets/moving/プッシーニ・スッシーニ-sheet.png'),
+      'rakkooni-watermelni-attacker': require('../../assets/moving/ラッコオニ・ウォーターメルニ.png'),
+      'svinino-bombondino-attacker': require('../../assets/moving/スヴィニーノ・ボンボンディーノ-sheet.png'),
+      'cococcini-mama-support': require('../../assets/moving/ココッシニ・ママ-sheet.png'),
+      'perochello-lemonchello-attacker': require('../../assets/moving/ペロケッロ・レモンチェッロ-sheet.png'),
+      'ballerino-lololo-attacker': require('../../assets/moving/バレリーノ・ロロロ-sheet.png'),
+      'pipistrawberry-support': require('../../assets/moving/ピピストロベリー-sheet.png'),
+      'spaghetti-toiletti-attacker': require('../../assets/moving/スパゲッティ・トゥアレッティ-sheet.png'),
+      'ganganzeli-torlala-support': require('../../assets/moving/ガンガンツェリ・トルララ-sheet.png'),
+      'shupionilo-gorvilo-attacker': require('../../assets/moving/シュピオニロ・ゴルビロ-sheet.png'),
+      'torlimelo-torlicina-support': require('../../assets/moving/トルリメロ・トルリチナ-sheet.png'),
     }),
     [],
   );
@@ -216,7 +249,7 @@ export default function TowerScreen() {
       contentContainerStyle={styles.contentContainer}
     >
       <Text style={styles.title}>ブレインロットの塔</Text>
-      <Text style={styles.subtitle}>魔王は玉座で眠り続けている……。</Text>
+      <Text style={styles.subtitle}>集めて稼いでまた進む...</Text>
 
       <View style={styles.card}>
         <Text style={styles.label}>現在の階層</Text>
